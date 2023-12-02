@@ -2,16 +2,29 @@ import {gql} from "apollo-server-express";
 
 export const typeDefs = gql `
     type User {
+        _id:ID
+        userName:String
+        password:String
+        email:String
+        token:String
+        personalDetails:Personal
+    }
+    type Personal {
+        age:Int
+        gender:String
+    }
+    type Login {
+        _id:ID
+        email:String
+        token:String
+    }
+    type Updateuser {
         _id:ID!
         userName:String
         password:String
         email:String
         token:String
-        personalDetails:personal
-    }
-    type personal {
-        age:Int
-        gender:String
+        personalDetails:Personal
     }
     type Currency {
         _id:ID!
@@ -39,7 +52,10 @@ export const typeDefs = gql `
         password:String
         email:String
         personalDetails:personalInput
-
+    }
+    input loginInput {
+        email:String
+        password:String
     }
     input personalInput {
         age:Int
@@ -65,7 +81,8 @@ export const typeDefs = gql `
     }
     type Mutation {
         createUser(input:userInput):User
-        Login(input:userInput):User
+        Login(input:loginInput):Login
+        updateUser(input:userInput):Updateuser
         createCurrency(input:currencyInput):Currency
         createDeposit(input:depositInput): Deposit
         createWithdraw(input:withdrawInput):Withdraw

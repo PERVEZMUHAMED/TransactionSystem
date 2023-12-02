@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { ApolloError } from "apollo-server-express";
-import { Types } from "../di/Types";
+import { TYPES } from "../di/Types";
 import IWithdrawRepository from "../repository/Interface/withdraw.repository.interface";
 import IWithdrawBusiness from "./Interface/withdraw.business.interface";
 import withdrawModel from "../model/withdraw.model";
@@ -12,7 +12,7 @@ import currencyModel from "../model/currency.model";
 export default  class WithdrawBusiness implements IWithdrawBusiness {
     private readonly withdraw : IWithdrawRepository;
     constructor(
-        @inject(Types.Withdraw) private _withdraw:IWithdrawRepository
+        @inject(TYPES.Withdraw) private _withdraw:IWithdrawRepository
     ) {
        this.withdraw = _withdraw; 
     }

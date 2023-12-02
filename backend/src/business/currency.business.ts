@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { Types } from "../di/Types";
+import { TYPES } from "../di/Types";
 import ICurrencyRepository from "../repository/Interface/currency.repository.interface";
 import ICurrencyBusiness from "./Interface/currency.business.interface";
 import { ApolloError } from "apollo-server-express";
@@ -12,7 +12,7 @@ export default class CurrencyBusiness implements ICurrencyBusiness {
 
     private readonly currency:ICurrencyRepository;
     constructor(
-        @inject(Types.Currency) private _currency: ICurrencyRepository
+        @inject(TYPES.Currency) private _currency: ICurrencyRepository
     ) {
         this.currency = _currency;
     }

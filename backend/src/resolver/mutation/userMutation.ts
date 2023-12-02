@@ -16,9 +16,10 @@ export const userMutation = {
         },
         Login:async(_: any, args: any)=>{
             try {
-                const userToken = await user.Login(args);
-                if(!userToken) return new ApolloError("401", "usernot login");
-                return userToken;
+                const token = await user.Login(args);
+                console.log("userTokenB", token);
+                if(!token) return new ApolloError("401", "usernot login");
+                return token;
             } catch (error) {
                 return error;
             }

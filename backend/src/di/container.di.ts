@@ -1,7 +1,7 @@
 import { Container } from "inversify";
 import UserBusiness from "../business/user.business";
 import IUserBusiness from "../business/Interface/user.business.interface";
-import { Types } from "./Types";
+import { TYPES } from "./Types";
 import IUserRepository from "../repository/Interface/user.repository.interface";
 import UserRepository from "../repository/user.repository";
 import ICurrencyRepository from "../repository/Interface/currency.repository.interface";
@@ -19,10 +19,10 @@ import IWithdrawBusiness from "../business/Interface/withdraw.business.interface
 
 const container = new Container();
 
-container.bind<IUserRepository>(Types.User).to(UserRepository);
-container.bind<ICurrencyRepository>(Types.Currency).to(CurrencyRepository);
-container.bind<IDepositRepository>(Types.Deposit).to(DepositRepository);
-container.bind<IWithdrawRepository>(Types.Withdraw).to(WithdrawRepository);
+container.bind<IUserRepository>(TYPES.User).to(UserRepository);
+container.bind<ICurrencyRepository>(TYPES.Currency).to(CurrencyRepository);
+container.bind<IDepositRepository>(TYPES.Deposit).to(DepositRepository);
+container.bind<IWithdrawRepository>(TYPES.Withdraw).to(WithdrawRepository);
 
 
 

@@ -1,5 +1,5 @@
 
-export  const Types = {
+export  const TYPES = {
     User: Symbol.for("User"),
     Currency: Symbol.for("Currency"),
     Deposit: Symbol.for("Deposit"),

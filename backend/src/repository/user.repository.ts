@@ -31,4 +31,14 @@ export default class UserRepository implements IUserRepository {
             return error;
         }
     }
+    public findById = async(args, model)=>{
+        // console.log("argsR", args);
+        try {
+            const findUserById = await model.findById(args);
+            // console.log("findUserByIdR", findUserById);
+            return findUserById;
+        } catch (error) {
+            return error;
+        }
+    }
 };

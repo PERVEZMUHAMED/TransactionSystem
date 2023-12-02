@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import IDepositRepository from "../repository/Interface/deposit.repository.interface";
-import { Types } from "../di/Types";
+import { TYPES } from "../di/Types";
 import depositModel from "../model/deposit.model";
 import { ApolloError } from "apollo-server-express";
 import auditorModel from "../model/auditor.model";
@@ -12,7 +12,7 @@ import IDepositBusiness from "./Interface/deposit.business.interface";
 export default  class DepositBusiness implements IDepositBusiness {
     private readonly deposit : IDepositRepository;
     constructor(
-        @inject(Types.Deposit) private _deposit:IDepositRepository
+        @inject(TYPES.Deposit) private _deposit:IDepositRepository
     ) {
        this.deposit = _deposit; 
     }
