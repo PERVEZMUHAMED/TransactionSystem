@@ -23,7 +23,15 @@ export const userMutation = {
             } catch (error) {
                 return error;
             }
+        },
+        changePassword: async(parent, args, context)=>{
+            try {
+                const chPW = await user.changePassword(args, context);
+                if(!chPW) throw new ApolloError("Password not change", "401");
+                return chPW;
+            } catch (error) {
+                return error;
+            }
         }
-
     }
 };

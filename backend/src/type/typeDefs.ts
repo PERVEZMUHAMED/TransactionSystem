@@ -14,9 +14,14 @@ export const typeDefs = gql `
         gender:String
     }
     type Login {
-        _id:ID
+        _id:ID!
         email:String
         token:String
+    }
+    type Changepassword {
+        _id:ID!
+        oldPassword:String
+        newPassword:String
     }
     type Updateuser {
         _id:ID!
@@ -53,13 +58,17 @@ export const typeDefs = gql `
         email:String
         personalDetails:personalInput
     }
+    input personalInput {
+        age:Int
+        gender:String
+    }
     input loginInput {
         email:String
         password:String
     }
-    input personalInput {
-        age:Int
-        gender:String
+    input changePasswordInput {
+        oldPassword:String
+        newPassword:String
     }
     input currencyInput {
         currencyName:String
@@ -82,6 +91,7 @@ export const typeDefs = gql `
     type Mutation {
         createUser(input:userInput):User
         Login(input:loginInput):Login
+        changePassword(input:changePasswordInput):Boolean
         updateUser(input:userInput):Updateuser
         createCurrency(input:currencyInput):Currency
         createDeposit(input:depositInput): Deposit

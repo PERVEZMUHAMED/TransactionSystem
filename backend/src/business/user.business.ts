@@ -74,7 +74,7 @@ export default class UserBusiness implements IUserBusiness  {
         console.log("argsB", args);
         console.log("contextB", context);
         console.log(context.users._id == new objectId(args._id));
-        if(context.users._id ==  args._id) {
+        if(context.users._id == args._id) {
             try {
                 const user = await this.user.findById({_id:new objectId(args._id)}, userModel);
                 console.log("user", user);
@@ -83,19 +83,49 @@ export default class UserBusiness implements IUserBusiness  {
             } catch (error) {
                 return error;
             }
-            } else {
-                throw new ApolloError("you not have access to retrieve this account", "401");
+        } else {
+            throw new ApolloError("you not have access to retrieve this account", "401");
         }
     }
-                public Verifytoken = async(args)=>{
-                    try {
-                        const {JWT_SECRET} = process.env;
-                        const decoded:any = await jwt.verify(args, JWT_SECRET);
-                        // if(!verifyToken) throw new ApolloError("Unauthorized User", "401");
-                        const user = await this.user.findById(decoded._id, userModel);
-                        return user;
-                    } catch (error) {
-                        return error;
-                    }
-                }
+    public Verifytoken = async(args)=>{
+        try {
+            const {JWT_SECRET} = process.env;
+            const decoded:any = await jwt.verify(args, JWT_SECRET);
+            if(!decoded) throw new ApolloError("Unauthorized User", "401");
+            const user = await this.user.findById(decoded._id, userModel);
+            return user;
+        } catch (error) {
+            return error;
+        }
+    }
+    public  changePassword = async(args, context)=>{
+        const {oldPassword, newPassword} = args.input;
+        if(context.users) {
+            try {
+                const user = await this.user.findById({_id:context.users._id}, userModel);
+                if(!user) return new ApolloError("User not Found", "401");
+                const validOldPW = await compare(oldPassword, user.password);
+                if(!validOldPW) throw new ApolloError("YOur old password is wrong","401");
+                const hashPassword = await hash(newPassword, 7);
+                user.password = hashPassword;
+                await user.save();
+                return true;
+            } catch (error) {
+                return error;
+            }
+        } else {
+            throw new ApolloError("First login and then hanlde this resouce", "401");
+        }
+    }
+//     public forgotpassword = async(args, context)=>{
+//         const {email} = args.input;
+//         // if(context.users) {
+//             try {
+//             } catch (error) {
+                
+//             }
+
+//         }
+
+//     }
 }
