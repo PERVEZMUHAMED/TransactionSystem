@@ -7,11 +7,34 @@ export const typeDefs = gql `
         password:String
         email:String
         token:String
+        walletDetails:[Wallet]
+        depositDetails:[Deposit]
+        withdrawDetails:[Withdraw]
+        auditorDetails:[Auditor]
         personalDetails:Personal
     }
     type Personal {
         age:Int
         gender:String
+    }
+    type Wallet {
+        _id:ID!
+        user_id:String
+        Wallet:[walletdetail]
+    }
+    type walletdetail {
+        currency_id:String
+        currency:String
+        Amount:Int
+    }
+    type Auditor {
+        _id:ID!
+        user_id:String
+        currency_id:String
+        transactionId:String
+        pre_balance:Int
+        post_balance:Int
+        category:String
     }
     type Login {
         _id:ID!
@@ -91,6 +114,8 @@ export const typeDefs = gql `
     type Mutation {
         createUser(input:userInput):User
         Login(input:loginInput):Login
+        forgotPassword(email:String!):Boolean
+        resetPassword(resetPasswordToken:String newPassword:String):String
         changePassword(input:changePasswordInput):Boolean
         updateUser(input:userInput):Updateuser
         createCurrency(input:currencyInput):Currency
@@ -99,5 +124,8 @@ export const typeDefs = gql `
     }
     type Query {
         getUser(_id:ID!):User
+        getSpecificUserAllDetails(_id:ID!):[User]
+        getSpecificUserAuditorDetails(_id:ID!):[User]
+        getSpecificUserAuditorDetailsFDTD(_id:ID! FromDate:String ToDate:String):[User]
     }
 `;

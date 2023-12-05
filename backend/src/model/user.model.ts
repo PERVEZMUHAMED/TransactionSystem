@@ -26,7 +26,9 @@ const userSchema = new Schema({
     role:{
         type:String,
         default:"user"
-    }
+    },
+    resetPasswordToken:String,
+    resetPasswordTokenExpire:Date,
 },{timestamps:true});
 
 export default model<User>("users", userSchema);

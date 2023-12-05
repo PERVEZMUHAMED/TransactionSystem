@@ -1,7 +1,6 @@
 import { ApolloError } from "apollo-server-errors";
 import { user } from "../../di/container.di";
-// import  users from "../../di/container.di";
-// import { users } from "../../di/container.di"
+
 
 export const userMutation = {
     Mutation:{
@@ -20,6 +19,24 @@ export const userMutation = {
                 console.log("userTokenB", token);
                 if(!token) return new ApolloError("401", "usernot login");
                 return token;
+            } catch (error) {
+                return error;
+            }
+        },
+        forgotPassword:async(parent, args, context)=>{
+            try {
+                const fp = await user.forgotPassword(args);
+                if(!fp) throw new ApolloError("Forgot password is not found ", "401");
+                return fp;
+            } catch (error) {
+                return error;
+            }
+        },
+        resetPassword:async(parent, args, context)=>{
+            try {
+                const rp = await user.resetPassword(args);
+                if(!rp) throw new ApolloError("Password not reset", "401");
+                return rp;
             } catch (error) {
                 return error;
             }

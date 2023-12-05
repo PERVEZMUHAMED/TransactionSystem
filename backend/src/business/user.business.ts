@@ -9,6 +9,8 @@ import userModel from "../model/user.model";
 import currencyModel from "../model/currency.model";
 import walletModel from "../model/wallet.model";
 import jwt from "jsonwebtoken";
+import nodemailer, { createTransport } from "nodemailer";
+import { createHash, randomBytes } from "crypto";
 import { Types } from "mongoose";
 let objectId = Types.ObjectId;
 @injectable()
@@ -117,15 +119,79 @@ export default class UserBusiness implements IUserBusiness  {
             throw new ApolloError("First login and then hanlde this resouce", "401");
         }
     }
-//     public forgotpassword = async(args, context)=>{
-//         const {email} = args.input;
-//         // if(context.users) {
-//             try {
-//             } catch (error) {
-                
-//             }
+    public forgotPassword = async(args)=>{
+        const {email} = args;
+        try {
+            const token = randomBytes(20).toString('hex');
+            const resetToken = createHash("sha256").update(token).digest('hex');
+            const expireToken = Date.now() + 30*60*1000;
 
-//         }
+            const user = await this.user.findOne({email:email}, userModel);
+            if(!user) throw new ApolloError("User not found with the email", "401");
+            user.resetPasswordToken = resetToken;
+            user.resetPasswordTokenExpire = expireToken;
+            await user.save({validateBeforeSave:false});
+            console.log("resetToken");
+            
+            console.log("resetPasswordTokenB", user.resetPasswordToken);
 
-//     }
+            // create a reseturl
+            const {PORT} = process.env;
+            const resetUrl = `http://localhost:${PORT}/reset-password?token=${resetToken}`;
+            const message = `Your password reset url is as follows \n\n
+            ${resetUrl} \n\n If you have not requested this email, then ignore it.`
+            const sendEmail = await this.sendResetPasswordEmail({
+                email:user.email,
+                subject:"JVLCART Password Recovery",
+                message:message
+            })
+            console.log("sendEmailB", sendEmail);
+            return true;
+        } catch (error) {
+            return error;
+        }
+    }
+    public sendResetPasswordEmail = async(options)=>{
+
+        const {SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, SMTP_FROM_NAME, SMTP_FROM_EMAIL} = process.env;
+        const transport:any = {
+            host:SMTP_HOST,
+            port:SMTP_PORT,
+            auth: {
+              user:SMTP_USER,
+              pass:SMTP_PASS
+            },
+        };
+        const transporter = createTransport(transport);
+        const message = {
+            from: `${SMTP_FROM_NAME} <${SMTP_FROM_EMAIL}>`,
+            to:options.email,
+            subject:options.subject,
+            text:options.message
+        }
+        await transporter.sendMail(message);
+    }
+    public resetPassword = async(args)=>{
+        const {resetPasswordToken, newPassword} = args;
+        try {
+            const resetPassword = createHash('sha256').update(resetPasswordToken).digest('hex');
+            console.log("resetPasswordTokenB", resetPassword);
+            const user = await this.user.findOne({
+                resetPasswordToken,
+                resetPasswordTokenExpire:{$gt:Date.now()}
+            },userModel);
+            if(!user) throw new ApolloError("Password reset token is invalid or expired", "401");
+            console.log("useB", user);
+            const hashPassword = await hash(newPassword, 7);
+            user.password = hashPassword;
+            user.resetPasswordToken = undefined;
+            user.resetPasswordTokenExpire = undefined;
+            await user.save({validateBeforeSave:false});
+            // const token = await this.user.({email:user.email}, userModel);
+            // console.log("headerTokens", token);
+            return "Password resetSuccessfully";
+        } catch (error) {
+            return error;
+        }
+    }
 }

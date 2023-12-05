@@ -16,6 +16,10 @@ import IWithdrawRepository from "../repository/Interface/withdraw.repository.int
 import WithdrawRepository from "../repository/withdraw.repository";
 import WithdrawBusiness from "../business/withdraw.business";
 import IWithdrawBusiness from "../business/Interface/withdraw.business.interface";
+import IGetUserBusiness from "../business/Interface/getuser.business.interface";
+import GetUserBusiness from "../business/getuser.business";
+import IGetUserRepository from "../repository/Interface/getuser.repository.interface";
+import GetUserRepository from "../repository/getuser.repository";
 
 const container = new Container();
 
@@ -23,6 +27,7 @@ container.bind<IUserRepository>(TYPES.User).to(UserRepository);
 container.bind<ICurrencyRepository>(TYPES.Currency).to(CurrencyRepository);
 container.bind<IDepositRepository>(TYPES.Deposit).to(DepositRepository);
 container.bind<IWithdrawRepository>(TYPES.Withdraw).to(WithdrawRepository);
+container.bind<IGetUserRepository>(TYPES.Getuser).to(GetUserRepository);
 
 
 
@@ -30,5 +35,5 @@ export const user = container.resolve<IUserBusiness>(UserBusiness);
 export const currency = container.resolve<ICurrencyBusiness>(CurrencyBusiness);
 export const deposit = container.resolve<IDepositBusiness>(DepositBusiness);
 export const withdraw = container.resolve<IWithdrawBusiness>(WithdrawBusiness);
-
+export const getuser = container.resolve<IGetUserBusiness>(GetUserBusiness);
 

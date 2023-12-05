@@ -22,7 +22,7 @@ export default class App {
             typeDefs:typeDefs,
             resolvers:[
                 userMutation, currencyMutation,  depositMutation, 
-                withdrawMutation, userQuery
+                withdrawMutation, userQuery,
             ],
             context:async({req})=>{
                 try {
